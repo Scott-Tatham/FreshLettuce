@@ -3,53 +3,66 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
+	public GameObject cam;
     public Rigidbody rigid;
-    private float moveSpeed; 
+
+    private float moveSpeed;
 	private float jumpHeight;
-	private bool isGrounded; 
+    private bool isGrounded;
+
+	private RaycastHit hit;
+	private float distance = 1f;
+	private Vector3 dir = new Vector3(0, -1, 0);
 
 	void Start()
 	{
 		Rigidbody rigid = GetComponent<Rigidbody>();
-        moveSpeed = 10.0f;
-        jumpHeight = 5.0f;
+
+        moveSpeed = 15.0f;
+        jumpHeight = 10.0f;
         isGrounded = true;
-	}
+}
 
 	void Update () 
 	{
 		playerInput (); 
+		GroundCheck ();
 	}
-
-	void OnCollisionEnter(Collision collidedObject)
+		
+	void GroundCheck()
 	{
-		if (collidedObject.gameObject.name == "Ground")
-        {
-			isGrounded = true; 
+		if(Physics.Raycast(transform.position, dir, out hit, distance))
+		{
+			isGrounded = true;
+		}
+
+		else
+		{
+			isGrounded = false;
 		}
 	}
-
+		
 	private void playerInput()
 	{
 		{
-			if  (Input.GetKey(KeyCode.W) && isGrounded == true)
+			if  (Input.GetKey(KeyCode.W))
             {
-				rigid.AddForce(rigid.transform.forward * moveSpeed, ForceMode.Acceleration);
+				rigid.AddForce(cam.transform.forward * moveSpeed, ForceMode.Acceleration);
 			}
 
-			if  (Input.GetKey(KeyCode.S) && isGrounded == true)
+			if  (Input.GetKey(KeyCode.S))
             {
-				rigid.AddForce(rigid.transform.forward * -moveSpeed, ForceMode.Acceleration);
+				rigid.AddForce (cam.transform.forward * -moveSpeed, ForceMode.Acceleration);
 			}
 
-			if (Input.GetKey (KeyCode.D) && isGrounded == true)
+			if (Input.GetKey (KeyCode.D))
             {
-				rigid.AddForce(rigid.transform.right * moveSpeed, ForceMode.Acceleration);
+				rigid.AddForce(cam.transform.right * moveSpeed, ForceMode.Acceleration);
 			}
 
-            if (Input.GetKey(KeyCode.A) && isGrounded == true)
+            if (Input.GetKey(KeyCode.A))
             {
-                rigid.AddForce(rigid.transform.right * -moveSpeed, ForceMode.Acceleration);
+                rigid.AddForce(cam.transform.right * -moveSpeed, ForceMode.Acceleration);
             }
 
             if (Input.GetKeyDown (KeyCode.Space) && isGrounded == true)
@@ -59,4 +72,4 @@ public class PlayerMovement : MonoBehaviour
 			}
 		}
 	}
-}
+} 
